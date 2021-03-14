@@ -184,7 +184,7 @@ module.exports = {
       .limit(Number(limit))
       .sort({ date: -1 });
     res.status(200).json({
-      nextUrl: `http://localhost:8080/user/home?page=${
+      nextUrl: `https://tuanna-final.herokuapp.com/user/home?page=${
         page + 1
       }&limit=${limit}`,
       message: "Success",
