@@ -1,0 +1,4 @@
+exports.PAYAL_SECECTKEY =
+  "EJppyHdNdcDJL2Ap97CpjnVSTdFdLZsbFUtCaD_1HFNW_ssXk1Tbtcjt0Q_TEDxzSdzdb6VX5sXXAw4q";
+exports.CLIENT_ID =
+  "AYZPpg_5Uf-T1KgsGdgJukc5pbiEyKhfe3g12U_rGZPjaeNOXY38BHZoTJ2edwun3UKoA7Dbo0fACpce";
