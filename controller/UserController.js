@@ -59,9 +59,9 @@ module.exports = {
     try {
       const user = await User.findOne({ email: req.body.email });
       const validPass = await bcrypt.compare(req.body.password, user.password);
-      if (!validPass) return res.send("Khong the login");
+      if (!validPass) return res.send("Can not login");
       const token = jwt.sign({ _id: user._id, role: 1 }, "asbdasd");
-      res.header("auth-token", token).json({ token: token });
+      res.header("auth-token", token).json({ token: token, user: user });
     } catch (error) {
       res.status(401).json({
         error: "Unknown username. Check again or try your email address.",
