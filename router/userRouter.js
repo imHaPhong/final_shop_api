@@ -41,5 +41,9 @@ router.get("/oders", UserController.getOder);
 router.get("/bill", UserController.getBill);
 router.get("/getAllRestaurant", UserController.getAllRestaurant);
 router.get("/getRestaurantInfo/:id", UserController.getRestaurantInfo);
+router.get("/tags", UserController.getHashTag);
+router.get("/filter/:tag", UserController.postFilter);
+router.post("/addAddress", UserController.useAddAddress);
+router.get("/oderInfo/:id", UserController.userGetOderInfo);
 
 module.exports = router;

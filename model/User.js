@@ -17,10 +17,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  address: {
-    type: String,
-    default: null,
-  },
+  address: [],
   isActive: {
     type: Boolean,
     default: false,

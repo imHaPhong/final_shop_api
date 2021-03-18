@@ -80,17 +80,46 @@ module.exports = {
           cloudinary.uploader.upload(
             "./uploads/" + "262x317-" + req.file.filename,
             async (err, result) => {
+              fs.unlinkSync(req.file.path);
+              fs.unlinkSync("./uploads/" + "262x317-" + req.file.filename);
               req.body.avatar = result.url;
-              const user = await User.updateOne(
-                { _id: req.user._id },
-                req.body
+              var user = await User.findById(req.user._id);
+
+              if (req.body.currentPassword) {
+                const validPass = await bcrypt.compare(
+                  req.body.currentPassword,
+                  user.password
+                );
+                if (!validPass) return res.send("Can not login");
+              }
+
+              var updates = Object.keys(req.body);
+              updates.map(
+                (el, index) =>
+                  (user[Object.keys(req.body)[index]] = req.body[el])
               );
+              await user.save();
               return res.send(user);
             }
           );
         });
     } else {
-      var user = await User.updateOne({ _id: req.user._id }, req.body);
+      var user = await User.findById(req.user._id);
+      if (req.body.currentPassword) {
+        const validPass = await bcrypt.compare(
+          req.body.currentPassword,
+          user.password
+        );
+        const salt = await bcrypt.genSalt(10);
+        req.body.password = await bcrypt.hash(req.body.password, salt);
+        if (!validPass) return res.send("Can not login");
+      }
+      var updates = Object.keys(req.body);
+      updates.map(
+        (el, index) => (user[Object.keys(req.body)[index]] = req.body[el])
+      );
+      await user.save();
+
       res.status(200).json(user);
     }
   },
@@ -256,11 +285,14 @@ module.exports = {
         uId: req.user._id,
         dish: req.body.dish,
         total: req.body.total,
+        deliveryAddress: req.body.deliveryAddress,
         logs: [{ msg: "Doi nha hang xac nhan", time: Date.now() }],
       }).save();
       io.getIO().emit("userCreateOder", { action: "createOder", oder: oder });
+      console.log(oder);
       res.send(oder);
     } catch (error) {
+      console.log(error);
       res.send(error);
     }
   },
@@ -340,5 +372,25 @@ module.exports = {
       }
     });
     res.json({ listRestaurantName });
+  },
+  getHashTag: async (req, res) => {
+    const post = await Posts.find();
+    const hashTag = [...new Set(post.map((el) => el.tag))];
+    res.status(200).json({ tags: hashTag });
+  },
+  postFilter: async (req, res) => {
+    const posts = await Posts.find({ tag: req.params.tag });
+    res.json({ posts });
+  },
+  useAddAddress: async (req, res) => {
+    const user = await User.findById(req.user._id);
+    console.log(req.body.address);
+    user.address = [...user.address, req.body.address];
+    await user.save();
+    res.json(user);
+  },
+  userGetOderInfo: async (req, res) => {
+    const oderInfo = await Oder.findById(req.params.id);
+    res.json({ oderInfo });
   },
 };

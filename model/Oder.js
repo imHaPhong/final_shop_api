@@ -9,6 +9,10 @@ const oderSchema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: "User",
   },
+  deliveryAddress: {
+    type: String,
+    required: true,
+  },
   dish: [],
   logs: [],
   time: {
