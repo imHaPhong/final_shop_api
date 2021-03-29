@@ -36,6 +36,15 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 1,
   },
+  voucher: [],
+  like: {
+    type: Number,
+    default: 0,
+  },
+  point: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const User = mongoose.model("User", UserSchema);

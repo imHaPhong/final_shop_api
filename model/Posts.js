@@ -21,6 +21,10 @@ const postsChema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  rating: {
+    type: Number,
+    required: true,
+  },
   image: [{ type: String, default: null }],
   originalImage: [{ type: String, default: null }],
   vote: [

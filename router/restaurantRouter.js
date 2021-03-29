@@ -37,5 +37,7 @@ router.put(
 );
 router.post("/getSubmenu", RestaurantController.getSubmenu);
 router.post("/getpayment", RestaurantController.getPaymanetDetail);
+router.get("/info", RestaurantController.getProfile);
+router.post("/info", upload.single("avatar"), RestaurantController.editProfile);
 
 module.exports = router;

@@ -35,10 +35,14 @@ const oderSchema = new mongoose.Schema({
       type: String,
     },
   },
+  discount: {
+    type: Number,
+  },
   total: {
     type: Number,
     require: true,
   },
+  finaTotal: { type: Number, require: true },
 });
 
 const Oder = mongoose.model("Oder", oderSchema);

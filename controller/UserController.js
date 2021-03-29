@@ -10,6 +10,8 @@ const fs = require("fs");
 const io = require("../socketio");
 const Cart = require("../model/Cart");
 const Oder = require("../model/Oder");
+const Voucher = require("../model/Voucher");
+const mongose = require("mongoose");
 
 cloudinary.config({
   cloud_name: "dmqpxd3wh",
@@ -133,6 +135,10 @@ module.exports = {
     const restaurant = await Restaurant.findOne({
       restaurantName: req.body.rName,
     });
+    restaurant.rating =
+      (Number(req.body.rating) + Number(restaurant.rating)) / 2;
+    restaurant.numberRating = Number(restaurant.numberRating) + 1;
+    await restaurant.save();
     delete req.body["rName"];
     let image = [];
     if (req.file || req.files) {
@@ -157,6 +163,7 @@ module.exports = {
           image: image,
           tag: req.body.tag,
           rId: req.body.rId,
+          rating: req.body.rating,
         });
         await post.save();
         io.getIO().emit("newPosts", { action: "newPosts", posts: post });
@@ -279,12 +286,30 @@ module.exports = {
     }
   },
   createOder: async (req, res) => {
+    const usingVoucher = await User.findById(req.user._id);
+    var voucher = usingVoucher.voucher.filter((el) => el._id == req.body.vId);
+
+    if (voucher.length == 0) {
+      voucher = [
+        {
+          discount: 0,
+          maxDisCount: 0,
+        },
+      ];
+    }
+
+    var tempDiscount = req.body.total * (Number(voucher[0].discount) / 100);
+    if (tempDiscount > voucher[0].maxDisCount) {
+      tempDiscount = voucher[0].maxDisCount;
+    }
     try {
       const oder = await Oder({
         rId: req.body.rId,
         uId: req.user._id,
         dish: req.body.dish,
         total: req.body.total,
+        discount: tempDiscount,
+        finaTotal: req.body.total - tempDiscount,
         deliveryAddress: req.body.deliveryAddress,
         logs: [{ msg: "Doi nha hang xac nhan", time: Date.now() }],
       }).save();
@@ -392,5 +417,42 @@ module.exports = {
   userGetOderInfo: async (req, res) => {
     const oderInfo = await Oder.findById(req.params.id);
     res.json({ oderInfo });
+  },
+  useGetVoucher: async (req, res) => {
+    const checkVoucher = await User.findById(req.user._id, {
+      voucher: {
+        $elemMatch: { _id: mongose.Types.ObjectId(req.body.vId) },
+      },
+    });
+    console.log(checkVoucher);
+    if (checkVoucher.voucher.length > 0) {
+      return res.json({ msg: "Da Lay", isSuccess: true });
+    }
+    const user = await User.findById(req.user._id);
+    const isVoucherExist = await Voucher.findById(req.body.vId);
+    if (isVoucherExist.endDate < new Date()) {
+      return res.json({ msg: "Out of date", isSuccess: false });
+    }
+    if (isVoucherExist.isLimited) {
+      if (isVoucherExist.qtn <= 0)
+        return res.json({ msg: "Da het1", isSuccess: false });
+      user.voucher = [...user.voucher, isVoucherExist];
+      await user.save();
+      isVoucherExist.qtn = isVoucherExist.qtn - 1;
+      await isVoucherExist.save();
+      return res.json({ msg: "Da Lay2", isSuccess: true });
+    }
+    user.voucher = [...user.voucher, req.body.vId];
+    await user.save();
+    return res.json({ msg: "Da Lay3", isSuccess: true });
+  },
+  useLoadVoucher: async (req, res) => {
+    const listVoucher = await Voucher.find();
+    res.json({ listVoucher });
+  },
+  ownVoucher: async (req, res) => {
+    const own = await User.findById(req.user._id);
+    console.log(own.voucher);
+    res.json({ listVoucher: own.voucher });
   },
 };

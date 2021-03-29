@@ -45,5 +45,7 @@ router.get("/tags", UserController.getHashTag);
 router.get("/filter/:tag", UserController.postFilter);
 router.post("/addAddress", UserController.useAddAddress);
 router.get("/oderInfo/:id", UserController.userGetOderInfo);
+router.post("/getvoucher", UserController.useGetVoucher);
+router.get("/ownVoucher", UserController.ownVoucher);
 
 module.exports = router;

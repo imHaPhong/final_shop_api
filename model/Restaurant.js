@@ -49,7 +49,11 @@ const restaurantChema = new mongoose.Schema({
   ],
   rating: {
     type: Number,
-    default: null,
+    default: 5,
+  },
+  numberRating: {
+    type: Number,
+    default: 0,
   },
   types: [
     {

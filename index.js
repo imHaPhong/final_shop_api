@@ -11,6 +11,7 @@ var cors = require("cors");
 const publicRouter = require("./router/publicRouter");
 const userRouter = require("./router/userRouter");
 const restaurantRouter = require("./router/restaurantRouter");
+const adminRouter = require("./router/admin");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -19,10 +20,7 @@ app.use(cors());
 app.use("/", publicRouter);
 app.use("/user", verify.auth, verify.userAuth, userRouter);
 app.use("/restaurant", verify.auth, verify.restaurantAuth, restaurantRouter);
-
-app.get("/test", (req, res) => {
-  res.send("alo");
-});
+app.use("/admin", verify.auth, verify.admintAuth, adminRouter);
 
 mongoose.connect(
   "mongodb+srv://anhtuan:123@cluster0.vpuly.mongodb.net/test?retryWrites=true&w=majority",

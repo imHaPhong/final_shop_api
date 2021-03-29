@@ -2,6 +2,10 @@ const router = require("express").Router();
 const RestaurantController = require("../controller/RestaurantController");
 const UserController = require("../controller/UserController");
 const { check } = require("express-validator");
+const AdminController = require("../controller/AdminController");
+
+router.post("/cAdmin", AdminController.createAccount);
+router.post("/admin/login", AdminController.login);
 
 router.post("/login", UserController.login);
 
@@ -26,5 +30,6 @@ router.post(
 
 router.post("/check", UserController.isUserExist);
 router.post("/restaurant/check", RestaurantController.checkField);
+router.get("/user/loadVoucher", UserController.useLoadVoucher);
 
 module.exports = router;

@@ -24,6 +24,12 @@ module.exports.restaurantAuth = (req, res, next) => {
   }
   next();
 };
+module.exports.admintAuth = (req, res, next) => {
+  if (req.user.role != 3) {
+    return res.status(401).json("Admin restaurant");
+  }
+  next();
+};
 // module.exports.restaurant = async (req, res, next) => {
 //   const token = req.header("Auth-token");
 //   if (!token) return res.send("Access dined");

@@ -9,6 +9,7 @@ const axios = require("axios");
 const querystring = require("querystring");
 const { PAYAL_SECECTKEY, CLIENT_ID } = require("../cofig");
 const io = require("../socketio");
+const { log } = require("console");
 
 cloudinary.config({
   cloud_name: "dmqpxd3wh",
@@ -229,6 +230,31 @@ module.exports = {
       await restaurant.save();
       res.send(restaurant);
     }
+  },
+  editProfile: async (req, res) => {
+    const restaurant = await Restaurant.findById(req.user._id);
+    var imgUrl = null;
+    if (req.file) {
+      await sharp(req.file.path)
+        .resize(480, 300)
+        .toFile("./uploads/" + "120x120-" + req.file.filename);
+      const imgUploaed = await cloudinary.uploader.upload(
+        "./uploads/" + "120x120-" + req.file.filename
+      );
+      fs.unlinkSync(req.file.path);
+      fs.unlinkSync("./uploads/" + "120x120-" + req.file.filename);
+      req.body.avatar = imgUploaed.url;
+    }
+    const updateField = Object.keys(req.body);
+    const time = req.body.timeAcitve.split(",");
+    req.body.timeAcitve = time;
+    updateField.map((el) => {
+      if (req.body[el] != "") {
+        restaurant[el] = req.body[el];
+      }
+    });
+    await restaurant.save();
+    console.log(restaurant);
   },
   getProfile: async (req, res) => {
     const restaurant = await Restaurant.findById(req.user._id);
