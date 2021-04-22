@@ -65,6 +65,7 @@ const restaurantChema = new mongoose.Schema({
     type: Number,
     default: 2,
   },
+  location: []
 });
 
 const restaurant = mongoose.model("Restaurant", restaurantChema);

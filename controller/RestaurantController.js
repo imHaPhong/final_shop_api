@@ -18,6 +18,9 @@ cloudinary.config({
 });
 
 module.exports = {
+  checkToken: (req,res) => {
+    res.status(200)
+  },
   signUp: async (req, res) => {
     const emailExist = await Restaurant.findOne({ email: req.body.email });
     if (emailExist) return res.send("email exist");
@@ -341,8 +344,7 @@ module.exports = {
   },
   getPaymanetDetail: async (req, res) => {
     const paymentId = req.body.paymentID;
-    const userID = req.user._id;
-    //
+    // const userID = req.user._id;
     const temp = querystring.stringify({
       grant_type: "client_credentials",
     });
@@ -359,7 +361,6 @@ module.exports = {
         },
       }
     );
-    console.log(resData);
     const token = resData.data.access_token;
     const data = await axios.default.get(
       `https://api-m.sandbox.paypal.com/v1/payments/payment/${paymentId}`,
@@ -371,5 +372,26 @@ module.exports = {
       }
     );
     console.log(data.data.transactions[0]);
+  },
+  loginWithGb: async (req, res) => {
+    const a_token =
+      "ya29.a0AfH6SMBO7EHE6t3FF8C5lWQ9hVmntVdks0K8vPjOvLzvsqQBRsnQhKRQUkrhtbwZj6MiQ2tGzeUOtDtUGLL-V_0NqUYGlWlzvh83yAwopbg8gqNRj6GLiMjoPWrRYf8HZidhXSLtL7rt3etvKprtctkwf0Jt";
+    const data = await axios.default.get(
+      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${a_token}`
+    );
+    console.log(data.data);
+  },
+  userGetNearLocation: async (req, res) => {
+    const userLocation = req.body.userLocation[1];
+    const listRestaurant = await Restaurant.find();
+    const nearRestaurant = [];
+    listRestaurant.forEach((el) => {
+      if (
+        Math.pow(Number(el.location[0]) - userLocation, 2) < Math.pow(0.01, 2)
+      ) {
+        nearRestaurant.push(el);
+      }
+    });
+    res.status(200).json(nearRestaurant);
   },
 };

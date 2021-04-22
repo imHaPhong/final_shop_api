@@ -8,25 +8,25 @@ module.exports.auth = async (req, res, next) => {
     req.user = verify;
     next();
   } catch (error) {
-    res.send("invalid token");
+    res.status(400).json("invalid token");
   }
 };
 
 module.exports.userAuth = (req, res, next) => {
   if (req.user.role != 1) {
-    return res.status(401).json("Authorization user");
+    return res.status(401).json("unauthorization");
   }
   next();
 };
 module.exports.restaurantAuth = (req, res, next) => {
   if (req.user.role != 2) {
-    return res.status(401).json("Authorization restaurant");
+    return res.status(401).json("unauthorization");
   }
   next();
 };
 module.exports.admintAuth = (req, res, next) => {
   if (req.user.role != 3) {
-    return res.status(401).json("Admin restaurant");
+    return res.status(401).json("unauthorization");
   }
   next();
 };

@@ -47,5 +47,6 @@ router.post("/addAddress", UserController.useAddAddress);
 router.get("/oderInfo/:id", UserController.userGetOderInfo);
 router.post("/getvoucher", UserController.useGetVoucher);
 router.get("/ownVoucher", UserController.ownVoucher);
+router.post("/getLocation", UserController.userGetNearResutaurant);
 
 module.exports = router;

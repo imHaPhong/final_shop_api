@@ -8,7 +8,6 @@ const Posts = require("../model/Posts");
 const Restaurant = require("../model/Restaurant");
 const fs = require("fs");
 const io = require("../socketio");
-const Cart = require("../model/Cart");
 const Oder = require("../model/Oder");
 const Voucher = require("../model/Voucher");
 const mongose = require("mongoose");
@@ -52,7 +51,7 @@ module.exports = {
       req.body = { ...req.body, password: hassedPass };
       const user = User(req.body);
       await user.save();
-      res.status(200).json({ msg: "Login sucess", isLogin: true });
+      res.status(200).json({ msg: "Login sucess", isLogin: true, user });
     } catch (error) {
       res.status(200).json({ msg: error, isLogin: true });
     }
@@ -455,4 +454,7 @@ module.exports = {
     console.log(own.voucher);
     res.json({ listVoucher: own.voucher });
   },
+  userGetNearResutaurant: async (req, res) => {
+    console.log(req.body);
+  }
 };

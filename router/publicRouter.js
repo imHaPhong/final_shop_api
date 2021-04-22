@@ -31,5 +31,7 @@ router.post(
 router.post("/check", UserController.isUserExist);
 router.post("/restaurant/check", RestaurantController.checkField);
 router.get("/user/loadVoucher", UserController.useLoadVoucher);
-
+router.post("/loginWith", RestaurantController.loginWithGb);
+router.get("/getAllRestaurant", UserController.getAllRestaurant);
+router.get("/getRestaurantInfo/:id", UserController.getRestaurantInfo);
 module.exports = router;

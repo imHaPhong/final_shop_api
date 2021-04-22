@@ -13,7 +13,7 @@ var upload = multer({
     },
   }),
 });
-
+router.get("/checkToken", restaurantRouter.checkToken)
 router.get("/", restaurantRouter.getAll);
 router.post("/addMenu", upload.single("dish-img"), restaurantRouter.addMenu);
 router.post(

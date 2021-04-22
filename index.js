@@ -22,6 +22,10 @@ app.use("/user", verify.auth, verify.userAuth, userRouter);
 app.use("/restaurant", verify.auth, verify.restaurantAuth, restaurantRouter);
 app.use("/admin", verify.auth, verify.admintAuth, adminRouter);
 
+app.get("/te", (req, res) => {
+  res.json({ Alo: "hihi" });
+});
+
 mongoose.connect(
   "mongodb+srv://anhtuan:123@cluster0.vpuly.mongodb.net/test?retryWrites=true&w=majority",
   { useNewUrlParser: true, useUnifiedTopology: true },
