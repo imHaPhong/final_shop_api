@@ -23,7 +23,7 @@ router.post(
 router.post(
   "/restaurant/signup",
   check("email").isEmail().notEmpty(),
-  check("password").isLength({ min: 3, max: 10 }),
+  check("password").isLength({ min: 6, max: 20 }),
   check("restaurantName").notEmpty(),
   RestaurantController.signUp
 );
@@ -31,7 +31,8 @@ router.post(
 router.post("/check", UserController.isUserExist);
 router.post("/restaurant/check", RestaurantController.checkField);
 router.get("/user/loadVoucher", UserController.useLoadVoucher);
-router.post("/loginWith", RestaurantController.loginWithGb);
+router.post("/loginWith", UserController.loginWithGb);
 router.get("/getAllRestaurant", UserController.getAllRestaurant);
 router.get("/getRestaurantInfo/:id", UserController.getRestaurantInfo);
+router.post("/search", UserController.userSearch);
 module.exports = router;

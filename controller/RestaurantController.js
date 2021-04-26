@@ -394,4 +394,14 @@ module.exports = {
     });
     res.status(200).json(nearRestaurant);
   },
+  addAmount: async (req, res) => {
+    const restaurant = await Restaurant.findById(req.user._id)
+    if(req.body.addIndex == 0) {
+      restaurant.setDailySales = req.body.data
+    } else {
+      restaurant.setMonthSales = req.body.data
+    }
+    await restaurant.save();
+    console.log(restaurant);
+  }
 };

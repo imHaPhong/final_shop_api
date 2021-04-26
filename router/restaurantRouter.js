@@ -39,5 +39,6 @@ router.post("/getSubmenu", RestaurantController.getSubmenu);
 router.post("/getpayment", RestaurantController.getPaymanetDetail);
 router.get("/info", RestaurantController.getProfile);
 router.post("/info", upload.single("avatar"), RestaurantController.editProfile);
+router.post("/addAmount", RestaurantController.addAmount);
 
 module.exports = router;

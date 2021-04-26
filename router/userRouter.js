@@ -27,6 +27,7 @@ router.get(
 
 router.get("/getListRestaurant/:rName", UserController.getListRestaurant);
 router.post("/login", UserController.login);
+// router.post("/loginWithGg", UserController.loginWithGb);
 router.get("/profile", UserController.getProfile);
 router.post("/profile", upload.single("avatar"), UserController.updateProfile);
 router.get("/newPost", UserController.searchRestaurant);

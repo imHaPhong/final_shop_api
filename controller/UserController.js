@@ -11,6 +11,8 @@ const io = require("../socketio");
 const Oder = require("../model/Oder");
 const Voucher = require("../model/Voucher");
 const mongose = require("mongoose");
+const axios = require("axios");
+
 
 cloudinary.config({
   cloud_name: "dmqpxd3wh",
@@ -68,6 +70,25 @@ module.exports = {
         error: "Unknown username. Check again or try your email address.",
       });
     }
+  },
+  loginWithGb: async (req, res) => {
+    const a_token =
+    req.body.token;
+    const data = await axios.default.get(
+      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${a_token}`
+    );
+    const userInfo = data.data
+    const newUser = await User.findOne({gId: userInfo.id})
+    if(newUser) {
+      const token = jwt.sign({ _id: newUser._id, role: 1 }, "asbdasd");
+      return res.header("auth-token", token).json({ token: token, user: newUser });
+    }
+    console.log( userInfo);
+    const user = await User({userName: userInfo.family_name, avatar: userInfo.picture, gId:userInfo.id, role:1, password:"ghadasjldkfsd", email: userInfo.email  })
+    await user.save();
+    const token = jwt.sign({ _id: user._id, role: 1 }, "asbdasd");
+
+    res.header("auth-token", token).json({ token: token, user: user });
   },
   getProfile: async (req, res) => {
     const user = await User.findById(req.user._id);
@@ -456,5 +477,17 @@ module.exports = {
   },
   userGetNearResutaurant: async (req, res) => {
     console.log(req.body);
+  },
+  userSearch: async (req, res) => {
+    const listRestaurant = await Restaurant.find()
+    let result = [];
+    listRestaurant.map(el => {
+      if(el.restaurantName.toLowerCase().includes(req.body.restaurantName.toLowerCase())) {
+        if(el.rating >= 4){
+          result.push(el)
+        }
+      }
+    })
+    res.json({ result: result})
   }
 };

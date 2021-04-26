@@ -55,17 +55,35 @@ const restaurantChema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  types: [
-    {
+  types: {
       type: String,
       required: true,
     },
-  ],
   role: {
     type: Number,
     default: 2,
   },
-  location: []
+  location: [],
+ setDailySales: {
+   type: Number,
+   default: 0
+ },
+ setMonthSales: {
+   type: Number,
+   default: 0
+ },
+ dailySales: {
+  type: Number,
+  default: 0
+ },
+ lastUpdate: {
+  type: Date,
+  default: new Date(),
+ },
+ createAt: {
+  type: Date,
+  default: new Date(),
+ }
 });
 
 const restaurant = mongoose.model("Restaurant", restaurantChema);
