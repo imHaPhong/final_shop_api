@@ -12,7 +12,7 @@ const Oder = require("../model/Oder");
 const Voucher = require("../model/Voucher");
 const mongose = require("mongoose");
 const axios = require("axios");
-
+const PostReport = require("../model/PostReport");
 
 cloudinary.config({
   cloud_name: "dmqpxd3wh",
@@ -152,6 +152,7 @@ module.exports = {
     res.send(restaurant);
   },
   createPosts: async (req, res) => {
+    console.log(req.body);
     const restaurant = await Restaurant.findOne({
       restaurantName: req.body.rName,
     });
@@ -397,6 +398,15 @@ module.exports = {
   },
   getRestaurantInfo: async (req, res) => {
     const restaurant = await Restaurant.findById(req.params.id);
+    const lastDate = new Date(restaurant.lastUpdate).toDateString()
+      const curentDate = new Date()
+      if( lastDate < curentDate.toDateString()) {
+        restaurant.lastUpdate = Date.now()
+        restaurant.dailyVistor = 0
+      }
+      restaurant.dailyVistor += 1
+      restaurant.monthlyVisitor += 1
+      await restaurant.save();
     delete restaurant.email;
     delete restaurant.password;
     delete restaurant.role;
@@ -477,17 +487,56 @@ module.exports = {
   },
   userGetNearResutaurant: async (req, res) => {
     console.log(req.body);
+    const listRestaurant = await Restaurant.find()
+    var result = []
+    listRestaurant.map(el => {
+      if( Math.pow(0.2, 2) > Math.pow(Number(req.body.lnt) - Number(el.location[0].trim()), 2)){
+        result.push(el)
+      }
+    })
+    res.json(result)
   },
   userSearch: async (req, res) => {
     const listRestaurant = await Restaurant.find()
+    const {restaurantName, type, rating} = req.body
+    console.log(req.body);
     let result = [];
     listRestaurant.map(el => {
-      if(el.restaurantName.toLowerCase().includes(req.body.restaurantName.toLowerCase())) {
-        if(el.rating >= 4){
+      if(el.restaurantName.toLowerCase().includes(restaurantName.toLowerCase())) {
+        if(type != null && rating != null) {
+
+          if(el.rating >= rating && el.types == type) {
+             result.push(el)
+          }
+        }
+        else if(rating != null ) {
+          console.log('3');
+
+          if(el.rating >= rating) {
+             result.push(el)
+          }
+        }
+        else if(type != null) {
+          console.log('5');
+          if(el.types == type) {
+             result.push(el)
+          }
+        }
+        else{
+          console.log('4');
           result.push(el)
         }
       }
     })
     res.json({ result: result})
+  },
+  getPoplateRestaurant: async (req, res) => {
+    const restaurant = await Restaurant.find().sort({"monthlyVisitor": -1}).limit(2)
+    res.json(restaurant)
+  },
+  reportPost: async (req, res) => {
+    const report = await PostReport(req.body)
+    await report.save();
+    res.json(report)
   }
 };

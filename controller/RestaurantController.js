@@ -10,6 +10,7 @@ const querystring = require("querystring");
 const { PAYAL_SECECTKEY, CLIENT_ID } = require("../cofig");
 const io = require("../socketio");
 const { log } = require("console");
+const Admin = require("../model/Admin");
 
 cloudinary.config({
   cloud_name: "dmqpxd3wh",
@@ -285,6 +286,28 @@ module.exports = {
   change2Processing: async (req, res) => {
     const oder = await Oder.findById(req.body.oId);
     oder.status = oder.status += 1;
+    if(oder.status == 2) {
+      const restaurant = await Restaurant.findById(req.user._id)
+      const admin  = await Admin.find()
+      const lastDate = new Date(restaurant.lastUpdate).toDateString()
+      const curentDate = new Date()
+      if( lastDate < curentDate.toDateString()) {
+        restaurant.lastUpdate = Date.now()
+        restaurant.dailySales = 0
+        admin[0].lastUpdate = Date.now()
+        admin[0].dailySales = 0
+      }
+      let temp =  oder.finaTotal * 0.9
+      let temp1 =  oder.finaTotal * 0.1
+      restaurant.dailySales += temp
+      restaurant.monthlySales += oder.finaTotal * 0.9
+      admin[0].dailySales += temp1
+      admin[0].monthlySales += oder.finaTotal * 0.1
+
+      console.log(restaurant);
+      await restaurant.save();
+      await admin[0].save()
+    }
     oder.logs = oder.logs.concat({
       msg: "Restaurant dang chuan bi mon an",
       time: Date.now(),

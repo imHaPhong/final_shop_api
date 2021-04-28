@@ -76,6 +76,10 @@ const restaurantChema = new mongoose.Schema({
   type: Number,
   default: 0
  },
+ monthlySales: {
+  type: Number,
+  default: 0
+ },
  lastUpdate: {
   type: Date,
   default: new Date(),
@@ -83,6 +87,14 @@ const restaurantChema = new mongoose.Schema({
  createAt: {
   type: Date,
   default: new Date(),
+ },
+ dailyVistor: {
+   type: Number,
+   default:0,
+ },
+ monthlyVisitor: {
+    type: Number,
+    default:0
  }
 });
 
