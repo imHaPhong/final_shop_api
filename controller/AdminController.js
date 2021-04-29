@@ -11,6 +11,11 @@ const e = require("cors");
 
 module.exports = {
   createVoucher: async (req, res) => {
+    delete req.body.radio
+    req.body.startDate = req.body.dateRangePicker[0]
+    req.body.endDate = req.body.dateRangePicker[1]
+    delete req.body.dateRangePicker
+    console.log(req.body);
     function makeid(length) {
       var result = "";
       var characters =

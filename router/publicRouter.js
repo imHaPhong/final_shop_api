@@ -41,4 +41,5 @@ router.post("/ingore", AdminController.ignoreReport);
 router.post("/createInfo", AdminController.adminCreateInfo);
 router.get("/createInfo", AdminController.adminGetInfo);
 router.post("/adminUpdate", AdminController.adminUpdateInfo);
+router.post("/create", AdminController.createVoucher);
 module.exports = router;
